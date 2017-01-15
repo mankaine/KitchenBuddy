@@ -27,7 +27,7 @@ body {
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script> 
 
 <link href='http://fonts.googleapis.com/css?family=Berkshire+Swash' rel='stylesheet' type='text/css'>
-<h1><font size="20"><center><font color="white" font face='Berkshire Swash'>QuickCook CookBook</font></center></font></h1>
+<h1><font size="20"><center><font color="white" font face='Berkshire Swash'>Kitchen Buddy</font></center></font></h1>
 
 
 <p></p>
@@ -511,6 +511,21 @@ function parseJson(imported) {
     
   }$("#attrib").html(+imported["attribution"]["html"]);
 }
+	
+$(function() {
+  $('a[href*="#"]:not([href="#"])').click(function() {
+    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
+      var target = $(this.hash);
+      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
+      if (target.length) {
+        $('html, body').animate({
+          scrollTop: target.offset().top
+        }, 1000);
+        return false;
+      }
+    }
+  });
+});
 
 </script>
 </html>
