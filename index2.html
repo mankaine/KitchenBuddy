@@ -377,7 +377,21 @@ var url_base = "http://api.yummly.com/v1/api/recipes?_app_id=" + id + "&_app_key
 var userIngredientArr = [];
 var ingdtCorrelation = {};
 
+// Function to create new text query boxes
+$("#makeNewIngredients").on(
+  "click",
+  function(event) {
+    var inputElement = jQuery(
+      "<input>", {
+        "id": "ingredient",
+        "type": "text",
+        "placeholder": "Enter ingredient"
+      });
 
+    // To force a new line to be created
+    $("#ingredientsList").prepend("<br>");
+    $("#ingredientsList").prepend(inputElement);
+  });
 
 // Function  to create an array of ingredients and returns ingredient list, servings, time 
 $("#submitIngredients").on(
@@ -443,7 +457,7 @@ function parseJson(imported) {
     var recipes = [];
     var count;
     for (count = 0; count < imported.matches.length; count++) {
-      var url_bare = imported["matches"][count]["imageUrlsBySize"][90];
+      var url_bare = imported["matches"][count]["imageUrlsBySize"]["90"];
       var r = {
         "name": imported["matches"][count]["recipeName"],
         "ingredientsArr": imported["matches"][count]["ingredients"],
@@ -453,9 +467,10 @@ function parseJson(imported) {
         "ingredientsMatch": 0
       }
 
-      // Calculate Ingredient Percentage
+      // Calculate Ingredient Percentage      
       for (var a = 0; a < userIngredientArr.length; a++) {
-        var b;
+        console.log("Current iteration #: ", a);
+        console.log("Amount of ingredients in current iteration: ", r["ingredientsArr"].length);
         for (var b = 0; b < r["ingredientsArr"].length; b++) {
           if (
             (r["ingredientsArr"][b].indexOf(userIngredientArr[a]) != -1) ||
@@ -464,10 +479,12 @@ function parseJson(imported) {
           }
         }
       }
+      console.log("# Of Ingredients that match", r["ingredientsMatch"]);
       r["ingredientsMatch"] = Math.round((r["ingredientsMatch"] / r["ingredientsArr"].length) * 100);
       recipes.push(r);
     }
-    console.log(recipes);
+
+
 
     recipes.sort(function(a, b) {
       return b.ingredientsMatch - a.ingredientsMatch;
@@ -480,12 +497,12 @@ function parseJson(imported) {
         htmlStr += "<tr>";
       }
 
-      htmlStr += '<td width="33%"><div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"><div class="hovereffect"><img class="img-responsive" src="' + recipes[count].url_img + '" alt="" style="width:360px;height:240px;"><div class="overlay"><h2><font face="Trebuchet MS">' + recipes[count].name + ' : ' + recipes[count].time + ' minutes<p></p><font color="#29E20E">' + recipes[count].ingredientsMatch + '% INGREDIENT MATCH</font></font></h2><a target="_blank" class="info" href="http://www.yummly.co/#recipe/' + recipes[count].id + '"><font face="Trebuchet MS">Click Here to View the Recipe!</font></a></div></div></div></td>';
+      htmlStr += '<td width="33%"><div class="col-lg-3 col-md-4 col-sm-6 col-xs-12"><div class="hovereffect"><img class="img-responsive" src="' + recipes[count].url_img + '" alt="" style="width:360px;height:240px;"><div class="overlay"><h2><font face="Trebuchet MS">' + recipes[count].name + ' : ' + recipes[count].time + ' minutes<p></p><font color="#29E20E">' + recipes[count].ingredientsMatch + '% INGREDIENT MATCH</font></font></h2><a class="info" href="http://www.yummly.co/#recipe/' + recipes[count].id + '"><font face="Trebuchet MS">View</font></a></div></div></div></td>';
       if (count % 3 == 2) {
         htmlStr += "</tr>";
       }
     }
-    userIngredientArr = [];
+    console.log(userIngredientArr);
     $("#insert-here").html(htmlStr);
   } else {
     if (userIngredientArr.length < 4) {
@@ -496,22 +513,9 @@ function parseJson(imported) {
   
     
   }$("#attrib").html(+imported["attribution"]["html"]);
+  userIngredientArr = [];
+  console.log(userIngredientArr);
 }
-	
-$(function() {
-  $('a[href*="#"]:not([href="#"])').click(function() {
-    if (location.pathname.replace(/^\//,'') == this.pathname.replace(/^\//,'') && location.hostname == this.hostname) {
-      var target = $(this.hash);
-      target = target.length ? target : $('[name=' + this.hash.slice(1) +']');
-      if (target.length) {
-        $('html, body').animate({
-          scrollTop: target.offset().top
-        }, 1000);
-        return false;
-      }
-    }
-  });
-});
 
 </script>
 </html>
